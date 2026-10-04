@@ -1,0 +1,11 @@
+{
+  "name": "수달일기",
+  "short_name": "수달일기",
+  "description": "할 일을 하면 수달이 마실을 다녀와요",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#FBF4EC",
+  "theme_color": "#FBF4EC",
+  "lang": "ko",
+  "icons": [{ "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

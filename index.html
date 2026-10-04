@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>수달일기 — 할 일을 하면 수달이 마실을 다녀와요</title>
+  <meta name="description" content="오늘 할 일을 하면 아기 수달에게 기운이 차고, 마실을 다녀와 이야기와 조약돌을 가져옵니다. 수달의 일기장이 하루하루 쌓여요.">
+  <meta name="theme-color" content="#FBF4EC">
+  <meta property="og:title" content="수달일기 — 할 일을 하면 수달이 마실을 다녀와요">
+  <meta property="og:description" content="체크리스트 대신 아기 수달. 할 일을 하면 기운이 차고, 수달이 마실에서 이야기를 주워 옵니다.">
+  <meta property="og:image" content="https://rlawnstlr001-design.github.io/sudal/og.png">
+  <meta property="og:url" content="https://rlawnstlr001-design.github.io/sudal/">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=202610041125">
+</head>
+<body>
+  <header class="top" id="top">
+    <a class="brand" href="#/" aria-label="수달일기 처음으로"><span class="brand-name">수달일기</span></a>
+    <div class="top-right">
+      <button class="stones" id="btn-shop" aria-label="조약돌 · 꾸미기 상점"><i aria-hidden="true"></i><b id="stone-count">0</b></button>
+      <button class="icon-btn" id="btn-settings" aria-label="설정">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="view" tabindex="-1"></main>
+
+  <nav class="tabbar" id="tabbar" aria-label="화면">
+    <a href="#/" data-tab="home"><span class="ti">🏡</span>굴집</a>
+    <a href="#/diary" data-tab="diary"><span class="ti">📔</span>일기장</a>
+    <a href="#/stats" data-tab="stats"><span class="ti">📊</span>기록</a>
+  </nav>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+  <div id="sheet-root"></div>
+
+  <script src="config.js?v=202610041125"></script>
+  <script type="module" src="js/app.js?v=202610041125"></script>
+</body>
+</html>
