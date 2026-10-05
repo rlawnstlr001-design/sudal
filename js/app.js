@@ -1,26 +1,21 @@
 // 수달일기 — 할 일을 하면 수달에게 기운이 차고, 수달은 마실을 다녀와 이야기를 주워 온다
-import * as db from './db.js?v=202610041125';
-import { STORIES, LINES, STRUGGLES, PERSONALITIES, FURS, ITEMS, fill, josa } from './content.js?v=202610041125';
+import * as db from './db.js?v=202610051106';
+import { STORIES, LINES, STRUGGLES, PERSONALITIES, ITEMS, fill, josa } from './content.js?v=202610051106';
 import {
   dayKey, growth, activeOn, energyOf, canStart, activeAdventure, returnOptions, resolveAdventure,
   streakOf, longestStreak, dailyRates, FULL, ENERGY_PER_GOAL, MAX_ADV_PER_DAY,
-} from './game.js?v=202610041125';
-import { otterSVG, sceneSVG, SCALE } from './otter.js?v=202610041125';
-import { isApp, haptic, shareFile, scheduleCheckin, scheduleReturn, initNative } from './native.js?v=202610041125';
-import { track } from './track.js?v=202610041125';
+} from './game.js?v=202610051106';
+import { otterSVG, sceneSVG, SCALE, otterSrc, itemSrc, sceneTime } from './otter.js?v=202610051106';
+import { isApp, haptic, shareFile, scheduleCheckin, scheduleReturn, initNative } from './native.js?v=202610051106';
+import { track } from './track.js?v=202610051106';
 
 const $ = (s, el = document) => el.querySelector(s);
 const view = $('#view');
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const newId = () => (crypto.randomUUID?.() ?? `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`);
 const STONES_PER_GOAL = 2;
-// 최신 이모지(🪨🪴)는 오래된 기기에서 빈 네모로 나와 작은 그림으로 대신한다
+// 조약돌 아이콘 (최신 이모지 🪨는 오래된 기기에서 빈 네모)
 const PEBBLE = '<svg viewBox="0 0 24 18" width="22" height="17" aria-hidden="true"><ellipse cx="12" cy="9" rx="11" ry="8" fill="#B8C0C4"/><ellipse cx="9" cy="6" rx="4" ry="2" fill="#fff" opacity=".6"/></svg>';
-const ITEM_ICON = {
-  ribbon: '🎀', straw: '👒', beanie: '🧶', scarf: '🧣', flower: '🌼', shell: '🐚', lantern: '🏮',
-  cairn: '<svg viewBox="0 0 32 32" width="30" height="30" aria-hidden="true"><ellipse cx="16" cy="27" rx="12" ry="4.5" fill="#9AA3A8"/><ellipse cx="16" cy="19" rx="9" ry="4" fill="#B8C0C4"/><ellipse cx="16" cy="12" rx="6" ry="3.5" fill="#CDD3D6"/></svg>',
-  pot: '<svg viewBox="0 0 32 32" width="30" height="30" aria-hidden="true"><path d="M9 30 L7 18 H25 L23 30 Z" fill="#B9774E"/><path d="M13 18 q-5 -10 -2 -15 M16 18 q1 -12 6 -16 M19 18 q6 -6 9 -9" stroke="#5E8B4A" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>',
-};
 
 const S = {
   pet: null,          // { name, fur, personality, bornKey, struggle }
@@ -67,8 +62,8 @@ function onboarding() {
   const draft = { fur: 'brown', name: '', personality: 'warm', struggle: null, goals: [] };
   let step = 0;
   const steps = [
-    () => `<p class="ob-k">1 / 5</p><h1>강가에서 아기 수달을 만났어요</h1><p class="ob-sub">어떤 털빛이었나요?</p>
-      <div class="furs">${FURS.map((f) => `<button class="fur${f.key === draft.fur ? ' on' : ''}" data-fur="${f.key}">${otterSVG({ fur: f.key, mood: 'idle', stage: 0, size: 96 })}<span>${f.name}</span></button>`).join('')}</div>`,
+    () => `<p class="ob-k">1 / 5</p><h1>강가에서 아기 수달을 만났어요</h1><p class="ob-sub">할 일을 하면 기운이 차고, 기운이 차면 마실을 다녀와 이야기를 주워 와요.</p>
+      <div class="ob-hero">${otterSVG({ mood: 'happy', stage: 0, size: 230 })}</div>`,
     () => `<p class="ob-k">2 / 5</p>${otterSVG({ fur: draft.fur, mood: 'happy', stage: 0, size: 150 })}<h1>이름을 지어 주세요</h1>
       <input class="ob-input" id="ob-name" maxlength="8" placeholder="예: 몽이" value="${esc(draft.name)}" autocomplete="off">
       <div class="chips">${['몽이', '보리', '달곰', '토리', '콩떡'].map((x) => `<button class="chip" data-name="${x}">${x}</button>`).join('')}</div>`,
@@ -312,7 +307,7 @@ function startAdventureSheet() {
   const opts = returnOptions(Date.now());
   const g = growth(S.pet.bornKey, today());
   const { sheet, close } = openSheet(`
-    <div class="adv-start">${otterSVG({ fur: S.pet.fur, mood: 'happy', stage: g.stage, equip: S.inv.equip, size: 120 })}
+    <div class="adv-start">${otterSVG({ mood: 'happy', stage: g.stage, equip: S.inv.equip, size: 160 })}
       <h2 class="sheet-title">${esc(nm('이/가'))} 마실을 나가요</h2>
       <p class="sub">언제 돌아오면 좋을까요? 돌아오면 이야기와 조약돌을 가져와요.</p>
       <div class="opts">${opts.map((o) => `<button class="opt" data-at="${o.at}"><b>${o.label}</b><small>${o.sub}</small></button>`).join('')}</div>
@@ -345,7 +340,7 @@ async function showResult() {
   const story = fill(STORIES[adv.storyIdx].t, name());
   const { sheet, close } = openSheet(`
     <div class="result">
-      ${otterSVG({ fur: S.pet.fur, mood: 'happy', stage: g.stage, equip: S.inv.equip, size: 130 })}
+      ${otterSVG({ mood: 'happy', stage: g.stage, equip: S.inv.equip, size: 170 })}
       <p class="r-k">마실 이야기</p>
       <p class="r-story">${esc(story)}</p>
       <div class="r-find"><span>주워 온 것</span><b>${esc(adv.find)}</b></div>
@@ -438,11 +433,11 @@ function shopSheet() {
   const g = growth(S.pet.bornKey, today());
   const draw = () => `
     <h2 class="sheet-title">꾸미기 <small>조약돌 ${S.inv.stones}개</small></h2>
-    <div class="shop-pet">${otterSVG({ fur: S.pet.fur, mood: 'happy', stage: g.stage, equip: S.inv.equip, size: 120 })}</div>
+    <div class="shop-pet">${otterSVG({ mood: "happy", stage: g.stage, equip: S.inv.equip, size: 170 })}</div>
     <div class="items">${ITEMS.map((it) => {
       const owned = S.inv.owned.includes(it.id);
       const on = it.slot === 'decor' ? S.inv.decor.includes(it.id) : S.inv.equip[it.slot] === it.id;
-      return `<button class="item${on ? ' on' : ''}" data-item="${it.id}"><span class="i-ico">${ITEM_ICON[it.id]}</span><b>${it.name}</b><small>${owned ? (on ? (it.slot === 'decor' ? '굴집에 둠' : '착용 중') : (it.slot === 'decor' ? '두기' : '입히기')) : `${PEBBLE} ${it.price}`}</small></button>`;
+      return `<button class="item${on ? ' on' : ''}" data-item="${it.id}"><span class="i-ico"><img src="${itemSrc(it.id)}" alt=""></span><b>${it.name}</b><small>${owned ? (on ? (it.slot === 'decor' ? '굴집에 둠' : '착용 중') : (it.slot === 'decor' ? '두기' : '입히기')) : `${PEBBLE} ${it.price}`}</small></button>`;
     }).join('')}</div>
     <p class="sub">기운이나 마실 시간은 팔지 않아요. 조약돌은 할 일·마실·호흡으로만 모입니다.</p>`;
   const { sheet } = openSheet(`<div id="shop">${draw()}</div>`, { onClose: () => render() });
@@ -516,13 +511,14 @@ function renderStats() {
 }
 
 // ---------- 공유 카드 (1080×1350) ----------
-function svgToImage(svg) {
-  return new Promise((res, rej) => {
-    const img = new Image();
-    img.onload = () => res(img);
-    img.onerror = rej;
-    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg.replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" '));
-  });
+function loadImg(src) {
+  return new Promise((res, rej) => { const img = new Image(); img.onload = () => res(img); img.onerror = rej; img.src = src; });
+}
+// 소품 위치는 otter.js의 SLOT과 같은 비율 — 화면에 그려진 수달에서 읽어 온다
+function accRects() {
+  const tmp = document.createElement('div');
+  tmp.innerHTML = otterSVG({ stage: 0, equip: S.inv.equip, size: 100 });
+  return [...tmp.querySelectorAll('.acc')].map((el) => ({ src: el.getAttribute('src'), x: parseFloat(el.style.left), y: parseFloat(el.style.top), w: parseFloat(el.style.width), r: parseFloat(el.style.rotate) || 0 }));
 }
 async function shareCard() {
   const k = today();
@@ -536,12 +532,19 @@ async function shareCard() {
   try { await document.fonts.load('60px Gaegu'); } catch { /* 없음 */ }
   c.fillStyle = '#FBF4EC'; c.fillRect(0, 0, W, H);
   // 크기를 박아 넣어야 slice(꽉 채우기)가 적용된다
-  const scene = await svgToImage(sceneSVG({ hour: new Date().getHours(), decor: S.inv.decor }).replace('<svg ', '<svg width="960" height="720" '));
+  const scene = await loadImg(`art/scene/${sceneTime(new Date().getHours())}.webp`);
   c.save(); c.beginPath(); c.roundRect(60, 60, W - 120, 720, 48); c.clip();
   c.drawImage(scene, 60, 60, W - 120, 720);
   c.restore();
-  const otter = await svgToImage(otterSVG({ fur: S.pet.fur, mood: 'happy', stage: g.stage, equip: S.inv.equip, size: 520 }));
-  c.drawImage(otter, (W - 520) / 2, 260, 520, 520);
+  // 수달 + 착용 소품 (그림 틀 560 기준 비율 그대로)
+  const ox = (W - 540) / 2, oy = 250, os = 540;
+  c.drawImage(await loadImg(otterSrc(g.stage, 'happy')), ox, oy, os, os);
+  for (const a of accRects()) {
+    const img = await loadImg(a.src);
+    const w = os * a.w / 100, h = w * img.height / img.width;
+    c.save(); c.translate(ox + os * a.x / 100 + w / 2, oy + os * a.y / 100 + h / 2); c.rotate(a.r * Math.PI / 180);
+    c.drawImage(img, -w / 2, -h / 2, w, h); c.restore();
+  }
   c.fillStyle = '#4A3628'; c.font = '700 84px Gaegu, sans-serif';
   c.fillText(`${name()} · ${g.day}일째`, 80, 900);
   c.font = '400 56px Gaegu, sans-serif'; c.fillStyle = '#6F523F';

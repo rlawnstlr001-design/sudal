@@ -82,25 +82,25 @@ main { max-width: 560px; margin: 0 auto; padding: 4px 16px calc(96px + env(safe-
 /* ---------- 굴집 ---------- */
 .stage-card { position: relative; border-radius: 28px; overflow: hidden; box-shadow: var(--soft); aspect-ratio: 3 / 2.25; background: var(--apricot); }
 .scene { position: absolute; inset: 0; width: 100%; height: 100%; }
-.scene .waves { animation: drift 4s ease-in-out infinite alternate; }
-@keyframes drift { to { transform: translateX(-10px); } }
-.scene .lantern { animation: sway 3s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: top center; }
-@keyframes sway { from { rotate: -4deg; } to { rotate: 4deg; } }
-.pet-wrap { position: absolute; left: 50%; bottom: 13%; transform: translateX(-38%); display: flex; flex-direction: column; align-items: center; }
+.pet-wrap { position: absolute; left: 50%; bottom: 9%; transform: translateX(-46%); display: flex; flex-direction: column; align-items: center; }
 .pet { border: none; background: none; padding: 0; cursor: pointer; line-height: 0; }
-.otter .otter-body { transform-origin: 100px 196px; animation: breathe 3.2s ease-in-out infinite; }
+/* 수달 그림 + 소품 (그림 틀 기준 % 배치) */
+.otter { display: inline-block; position: relative; width: var(--size); height: var(--size); }
+.otter-body { position: absolute; inset: 0; transform-origin: 50% 96%; animation: breathe 3.2s ease-in-out infinite; }
+.otter-img { display: block; width: 100%; height: 100%; user-select: none; -webkit-user-drag: none; pointer-events: none; filter: drop-shadow(0 6px 6px rgba(74, 54, 40, .18)); }
+.acc { position: absolute; height: auto; pointer-events: none; }
 @keyframes breathe { 50% { transform: scale(1.02, .985); } }
 .otter.mood-happy .otter-body { animation: hop .9s ease-in-out infinite; }
-@keyframes hop { 0%, 100% { transform: translateY(0); } 40% { transform: translateY(-9px) rotate(-2deg); } 60% { transform: translateY(-9px) rotate(2deg); } }
+@keyframes hop { 0%, 100% { transform: translateY(0); } 40% { transform: translateY(-7%) rotate(-2deg); } 60% { transform: translateY(-7%) rotate(2deg); } }
 .otter.mood-sleepy .otter-body { animation: doze 4s ease-in-out infinite; }
-@keyframes doze { 50% { transform: rotate(-3deg) translateY(2px); } }
-.otter .tail { transform-origin: 140px 160px; animation: wag 2.4s ease-in-out infinite; }
-@keyframes wag { 50% { transform: rotate(6deg); } }
-.otter .eyes { animation: blink 5s infinite; transform-origin: 100px 78px; }
-@keyframes blink { 0%, 94%, 100% { transform: scaleY(1); } 96% { transform: scaleY(.1); } }
-.otter .zzz { animation: float 2.4s ease-in-out infinite; }
-.otter .z2 { animation-delay: .8s; }
-@keyframes float { 0% { opacity: 0; transform: translateY(6px); } 40% { opacity: 1; } 100% { opacity: 0; transform: translateY(-10px); } }
+@keyframes doze { 50% { transform: rotate(-3deg) translateY(1%); } }
+.scene-img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.decor { position: absolute; height: auto; filter: drop-shadow(0 3px 3px rgba(74, 54, 40, .25)); pointer-events: none; }
+.decor-lantern { transform-origin: top center; animation: sway 3s ease-in-out infinite alternate; }
+@keyframes sway { from { rotate: -4deg; } to { rotate: 4deg; } }
+.steps { position: absolute; left: 40%; bottom: 17%; width: 26%; }
+.ob-hero { margin: 18px 0 0; }
+.i-ico img { display: block; width: 52px; height: 52px; object-fit: contain; margin: 0 auto; }
 .bubble { position: relative; max-width: 230px; margin-bottom: 4px; padding: 7px 14px; border-radius: 18px; background: var(--card); box-shadow: var(--soft); font-family: var(--hand); font-size: 21px; line-height: 1.2; text-align: center; color: var(--earth-d); animation: pop .35s cubic-bezier(.3, 1.6, .5, 1); }
 .bubble::after { content: ''; position: absolute; left: 50%; bottom: -7px; margin-left: -7px; border: 7px solid transparent; border-top-color: var(--card); border-bottom: 0; }
 @keyframes pop { from { transform: scale(.6); opacity: 0; } }

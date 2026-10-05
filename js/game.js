@@ -1,5 +1,5 @@
 // 수달일기 규칙 — 성장, 기운, 마실, 연속 기록. 화면과 분리된 순수 계산 (selftest로 검사)
-import { STAGES, STORIES, FINDS } from './content.js?v=202610041125';
+import { STAGES, STORIES, FINDS } from './content.js?v=202610051106';
 
 export const ENERGY_PER_GOAL = 34; // 목표 3개면 기운이 가득 찬다
 export const BREATH_ENERGY = 10;   // 호흡 1분 (하루 한 번)
